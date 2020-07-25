@@ -1,4 +1,20 @@
 <template>
+<!-- 
+  Thoughts:
+
+  Okay, so currently I'm syncing the poistion of <panel>s with the 
+  canvas through the $emit-@ message thing,
+  Is there a better way to do this? 
+  I think I should use dual-way variable binding,
+  so I can use the native reactive pattern without worry about it,
+  but, nah! the canvas update thing isn't native to the change
+  I don't know
+
+  edit: 
+  I somehow HAVE TO put this comment inside the <template> section,
+  or else VUEJS REFUSE TO WORK
+  WHY can't I have comment on the start of the file wtf vuejs? 
+-->
   <div id="panels">
     <div id="panel-container">
       <panel v-for="panel in panels" :key="panel.header" v-bind="panel" />

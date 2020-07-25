@@ -54,6 +54,10 @@ export default {
     _doUpdatePoistion(newPos) {
       const { top, left } = newPos;
       const container = this.$refs.container;
+      // TODO: 
+      // I should let vue do the style property binding
+      // at least I should try
+      // let's do it after the canvas thing is figured out
       container.style.top = `${top}px`;
       container.style.left = `${left}px`;
     },
