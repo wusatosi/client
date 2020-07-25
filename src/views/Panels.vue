@@ -1,6 +1,7 @@
 <template>
 <div>
     <panel/>
+    <panel/>
 </div>
 </template>
 <script>

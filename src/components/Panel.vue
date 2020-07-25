@@ -1,10 +1,20 @@
 <template>
-    <div>
+    <Dragable>
         <p>Stuff</p>
         <p>Stuff</p>
         <img src="https://cataas.com/cat">
-    </div>
+    </Dragable>
 </template>
+<script>
+import Dragable from "./Dragable.vue";
+
+export default {
+  name: "Panel",
+  components: {
+    "Dragable": Dragable
+  }
+}
+</script>
 <style scoped>
 
 div {
