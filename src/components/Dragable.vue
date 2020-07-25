@@ -8,6 +8,16 @@
 <script>
 export default {
   name: "Dragable",
+  props: {
+    top: {
+      type: Number,
+      default: () => this.$refs.container.offsetTop
+    },
+    left: {
+      type: Number,
+      default: () => this.$refs.container.offsetLeft
+    }
+  },
   data() {
     return {
       positions: {
@@ -29,7 +39,8 @@ export default {
     _onElementDrag(event) {
       const movements = this._calcuateMovements(event);
       this._persistNewPoistionState(event);
-      this._doUpdatePoistion(movements);
+      this._doUpdatePoistion( this._calcuateNewPoistion(movements) );
+      this._emitOnPosUpdate();
     },
     _calcuateMovements(event) {
       const movementX = this.positions.clientX - event.clientX;
@@ -40,16 +51,32 @@ export default {
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
     },
-    _doUpdatePoistion(movements) {
+    _doUpdatePoistion(newPos) {
+      const { top, left } = newPos;
+      const container = this.$refs.container;
+      container.style.top = `${top}px`;
+      container.style.left = `${left}px`;
+    },
+    _calcuateNewPoistion(movements) {
       const { movementX, movementY } = movements;
       const container = this.$refs.container;
-      container.style.top = (container.offsetTop - movementY) + 'px';
-      container.style.left = (container.offsetLeft - movementX) + 'px';
+      const top = container.offsetTop - movementY;
+      const left = container.offsetLeft - movementX;
+      return { top, left };
     },
     _unbindDragTracking() {
       document.onmouseup = null;
       document.onmousemove = null;
+    },
+    _emitOnPosUpdate() {
+      this.$emit("new-poistion");
     }
+  },
+  mounted() {
+    this._doUpdatePoistion({
+      top: this.top,
+      left: this.left
+    });
   }
 }
 </script>

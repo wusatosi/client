@@ -1,17 +1,25 @@
 <template>
-    <Dragable>
-        <p>Stuff</p>
+  <div ref="container">
+    <Dragable @new-poistion="posUpdate" :top="this['inital offset'].top" :left="this['inital offset'].left">
+        <p>{{ header }}</p>
         <p>Stuff</p>
         <img src="https://cataas.com/cat">
     </Dragable>
+  </div>
 </template>
 <script>
 import Dragable from "./Dragable.vue";
 
 export default {
   name: "Panel",
+  props: ["header", "inital offset"],
   components: {
     Dragable
+  },
+  methods: {
+    posUpdate() {
+      this.$emit("new-poistion", this.$refs.container.getBoundingClientRect())
+    }
   }
 }
 </script>
