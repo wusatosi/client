@@ -11,7 +11,7 @@ import Dragable from "./Dragable.vue";
 export default {
   name: "Panel",
   components: {
-    "Dragable": Dragable
+    Dragable
   }
 }
 </script>
