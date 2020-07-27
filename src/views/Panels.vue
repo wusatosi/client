@@ -17,9 +17,9 @@
 -->
   <div id="panels">
     <div id="panel-container">
-      <panel v-for="panel in panels" :key="panel.header" v-bind="panel" />
+      <panel v-for="panel in panels" :key="panel.index" v-bind="panel" />
     </div>
-    <pb/>
+    <pb v-bind="panels"/>
   </div>
 </template>
 <script>
@@ -29,15 +29,17 @@ import pb from '../components/PanelBackground.vue'
 const initalizeData = {
   panels: [
     {
+      index: 1,
       header: "panel 1",
-      "inital offset": {
+      offset: {
         top: 200,
         left: 200
       }
     },
     {
+      index: 2,
       header: "panel 2",
-      "inital offset": {
+      offset: {
         top: 200,
         left: 400
       }

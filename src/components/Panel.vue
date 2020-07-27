@@ -1,6 +1,6 @@
 <template>
   <div ref="container">
-    <Dragable @new-poistion="posUpdate" :top="this['inital offset'].top" :left="this['inital offset'].left">
+    <Dragable @new-poistion="posUpdate" :top="this['offset'].top" :left="this['offset'].left">
         <p>{{ header }}</p>
         <p>Stuff</p>
         <img src="https://cataas.com/cat">
@@ -12,7 +12,10 @@ import Dragable from "./Dragable.vue";
 
 export default {
   name: "Panel",
-  props: ["header", "inital offset"],
+  props: {
+      header: String,
+      offset: Object
+  },
   components: {
     Dragable
   },

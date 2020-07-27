@@ -11,11 +11,11 @@ export default {
   props: {
     top: {
       type: Number,
-      default: () => this.$refs.container.offsetTop
+      default: 0
     },
     left: {
       type: Number,
-      default: () => this.$refs.container.offsetLeft
+      default: 0
     }
   },
   data() {
