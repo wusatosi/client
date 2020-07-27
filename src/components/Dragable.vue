@@ -5,8 +5,16 @@
     <slot/>
   </div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { PoistionOffset } from "../utils/Panels";
+
+interface Movement {
+  movementX: number;
+  movementY: number;
+}
+
+export default Vue.extend({
   name: "Dragable",
   props: {
     top: {
@@ -21,13 +29,13 @@ export default {
   data() {
     return {
       positions: {
-        clientX: undefined,
-        clientY: undefined
+        clientX: NaN,
+        clientY: NaN
       }
     }
   },
   methods: {
-    dragMouseDown(event) {
+    dragMouseDown(event: MouseEvent) {
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
       this._bindDragTracking();
@@ -36,24 +44,24 @@ export default {
       document.onmousemove = this._onElementDrag;
       document.onmouseup = this._unbindDragTracking;
     },
-    _onElementDrag(event) {
-      const movements = this._calcuateMovements(event);
+    _onElementDrag(event: MouseEvent) {
+      const Movement = this._calcuateMovement(event);
       this._persistNewPoistionState(event);
-      this._doUpdatePoistion( this._calcuateNewPoistion(movements) );
+      this._doUpdatePoistion( this._calcuateNewPoistion(Movement) );
       this._emitOnPosUpdate();
     },
-    _calcuateMovements(event) {
+    _calcuateMovement(event: MouseEvent): Movement {
       const movementX = this.positions.clientX - event.clientX;
       const movementY = this.positions.clientY - event.clientY;
       return { movementX, movementY };
     },
-    _persistNewPoistionState(event) {
+    _persistNewPoistionState(event: MouseEvent) {
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
     },
-    _doUpdatePoistion(newPos) {
+    _doUpdatePoistion(newPos: PoistionOffset) {
       const { top, left } = newPos;
-      const container = this.$refs.container;
+      const container = this.$refs.container as HTMLElement;
       // TODO: 
       // I should let vue do the style property binding
       // at least I should try
@@ -61,9 +69,9 @@ export default {
       container.style.top = `${top}px`;
       container.style.left = `${left}px`;
     },
-    _calcuateNewPoistion(movements) {
-      const { movementX, movementY } = movements;
-      const container = this.$refs.container;
+    _calcuateNewPoistion(Movement: Movement): PoistionOffset {
+      const { movementX, movementY } = Movement;
+      const container = this.$refs.container as HTMLElement;
       const top = container.offsetTop - movementY;
       const left = container.offsetLeft - movementX;
       return { top, left };
@@ -82,5 +90,5 @@ export default {
       left: this.left
     });
   }
-}
+})
 </script>

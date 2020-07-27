@@ -17,37 +17,53 @@
 -->
   <div id="panels">
     <div id="panel-container">
-      <panel v-for="panel in panels" :key="panel.index" v-bind="panel" />
+      <panel v-for="panel in panels" :key="panel.index" v-bind:source="panel" />
     </div>
     <pb v-bind="panels"/>
   </div>
 </template>
-<script>
-import panel from '../components/Panel.vue'
-import pb from '../components/PanelBackground.vue'
+<script lang="ts">
+import Vue from "vue";
 
-const initalizeData = {
-  panels: [
+import { Panel } from "../utils/Panels";
+
+import panel from "../components/Panel.vue";
+import pb from "../components/PanelBackground.vue";
+
+const panels: Array<Panel> = [
     {
-      index: 1,
+      id: 1,
       header: "panel 1",
-      offset: {
+      poistion: {
         top: 200,
         left: 200
-      }
+      },
+      size: {
+        height: NaN,
+        width: NaN
+      },
+      anchor: []
     },
     {
-      index: 2,
+      id: 2,
       header: "panel 2",
-      offset: {
+      poistion: {
         top: 200,
         left: 400
-      }
+      },
+      size: {
+        height: NaN,
+        width: NaN
+      },
+      anchor: []
     }
   ]
+
+const initalizeData = {
+  panels
 }
 
-export default {
+export default Vue.extend({
   components: {
       panel,
       pb
@@ -55,7 +71,7 @@ export default {
   data() {
     return initalizeData;
   }
-}
+})
 </script>
 <style scoped>
 #panels {

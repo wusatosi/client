@@ -1,31 +1,69 @@
 <template>
   <div id="parent">
-    <h1>loaded</h1>
     <canvas ref="canvas"/>
   </div>
 </template>
-<script>
+<script lang="ts">
 import paper from "paper";
+import Vue, { PropType } from "vue";
 
-export default {
-  name: "Panel-Background",
-  mounted() {
-    // Copyed from http://paperjs.org/tutorials/getting-started/using-javascript-directly/
-    paper.setup(this.$refs.canvas);
-		// Create a Paper.js Path to draw a line into it:
-		const path = new paper.Path();
-		// Give the stroke a color
-		path.strokeColor = 'black';
-		const start = new paper.Point(100, 100);
-		// Move to start and draw a line from there
-		path.moveTo(start);
-		// Note that the plus operator on Point objects does not work
-		// in JavaScript. Instead, we need to call the add() function:
-		path.lineTo(start.add([ 200, -50 ]));
-		// Draw the view now:
-		paper.view.draw();
+import { Panel, DimensionData } from "../utils/Panels";
+
+class PanelLinkRelation {
+  from: DimensionData;
+  to: DimensionData;
+
+  constructor(from: Panel, to: Panel) {
+    this.validatePanelRelation(from, to);
+    this.from = from;
+    this.to = to;
   }
+
+  private validatePanelRelation(from: Panel, to: Panel) {
+    console.assert(
+      from.id < to.id,
+      `illegal linkage, id relation missmatch, from: ${from}, to: ${to}`
+    );
+  }
+
+  render() {
+    // TODO: Render Code goes here
+  }
+
 }
+
+export default Vue.extend({
+  name: "Panel-Background",
+  props: {
+    panels: {
+      type: Array as PropType<Array<Panel>>
+    }
+  },
+  data() {
+    return {
+      relations: new Array<PanelLinkRelation>()
+    }
+  },
+  methods: {
+    _setupPaper() {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      paper.setup(canvas);
+    },
+    _rebuildRelations() {
+      // TODO: Relation Analyze goes here
+    },
+    _reRenderAll() {
+      this.relations.forEach((relation) => {
+        relation.render();
+      });
+    }
+  },
+  mounted() {
+    this._setupPaper();
+    this._rebuildRelations();
+    this._reRenderAll();
+  }
+})
 </script>
 <style scoped>
 #parent {
