@@ -15,7 +15,7 @@
 import Vue, { PropType } from "vue";
 
 import Dragable from "./Dragable.vue";
-import { Panel } from "@/utils/Panels";
+import { Panel } from "@/utils/PanelTypes";
 
 export interface PanelPositionUpdateEvent {
   self: Panel;

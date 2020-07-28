@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { PoistionOffset } from "@/utils/Panels";
+import { PositionOffset } from "@/utils/PanelTypes";
 
 interface Movement {
   movementX: number;
@@ -59,7 +59,7 @@ export default Vue.extend({
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
     },
-    _doUpdatePosition(newPos: PoistionOffset) {
+    _doUpdatePosition(newPos: PositionOffset) {
       const { top, left } = newPos;
       const container = this.$refs.container as HTMLElement;
       // TODO: 
@@ -69,7 +69,7 @@ export default Vue.extend({
       container.style.top = `${top}px`;
       container.style.left = `${left}px`;
     },
-    _calculateNewPosition(Movement: Movement): PoistionOffset {
+    _calculateNewPosition(Movement: Movement): PositionOffset {
       const { movementX, movementY } = Movement;
       const container = this.$refs.container as HTMLElement;
       const top = container.offsetTop - movementY;

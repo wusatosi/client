@@ -19,13 +19,13 @@
     <div id="panel-container">
       <panel v-for="panel in this.panels" :key="panel.index" v-bind:source="panel" />
     </div>
-    <pb v-bind="this.panels"/>
+    <pb v-bind:panels="this.panels"/>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
-import { Panel } from "@/utils/Panels";
+import { Panel } from "@/utils/PanelTypes";
 
 import panel from "../components/Panel.vue";
 import pb from "../components/PanelBackground.vue";
@@ -39,10 +39,12 @@ const panels: Array<Panel> = [
         left: 200
       },
       size: {
-        height: NaN,
-        width: NaN
+        width: 200,
+        height: 230
       },
-      anchor: [],
+      anchor: {
+        topOffset: 100
+      },
       linkingTo: [2]
     },
     {
@@ -53,10 +55,12 @@ const panels: Array<Panel> = [
         left: 400
       },
       size: {
-        height: NaN,
-        width: NaN
+        height: 200,
+        width: 200
       },
-      anchor: [],
+      anchor: {
+        topOffset: 100
+      },
       linkingTo: []
     }
   ]

@@ -12,8 +12,8 @@ export interface DisplayData {
 
 export interface DimensionData {
   size: Size;
-  position: PoistionOffset;
-  anchor: Array<PanelLinkAnchor>;
+  position: PositionOffset;
+  anchor: PanelLinkAnchor;
 }
 
 export interface Size {
@@ -21,7 +21,7 @@ export interface Size {
   width: Px;
 }
 
-export interface PoistionOffset {
+export interface PositionOffset {
   top: Px;
   left: Px;
 }
