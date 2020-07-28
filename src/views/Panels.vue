@@ -70,7 +70,7 @@ export default Vue.extend({
       panel,
       pb
   },
-  data(): Array<Panel> {
+  data() {
     return initializeData;
   }
 })
