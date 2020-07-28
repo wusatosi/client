@@ -43,23 +43,39 @@ const panels: Array<Panel> = [
         height: 230
       },
       anchor: {
-        topOffset: 100
+        topOffset: 180
       },
-      linkingTo: [2]
+      linkingTo: [2,3]
     },
     {
       id: 2,
-      header: "panel 2",
+      header: "panel 3",
       position: {
-        top: 200,
-        left: 400
+        top: 500,
+        left: 700
       },
       size: {
         height: 200,
         width: 200
       },
       anchor: {
-        topOffset: 100
+        topOffset: 180
+      },
+      linkingTo: []
+    },
+    {
+      id: 3,
+      header: "panel 2",
+      position: {
+        top: 200,
+        left: 800
+      },
+      size: {
+        height: 200,
+        width: 200
+      },
+      anchor: {
+        topOffset: 180
       },
       linkingTo: []
     }
