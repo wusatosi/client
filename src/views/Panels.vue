@@ -42,7 +42,8 @@ const panels: Array<Panel> = [
         height: NaN,
         width: NaN
       },
-      anchor: []
+      anchor: [],
+      linkingTo: [2]
     },
     {
       id: 2,
@@ -55,7 +56,8 @@ const panels: Array<Panel> = [
         height: NaN,
         width: NaN
       },
-      anchor: []
+      anchor: [],
+      linkingTo: []
     }
   ]
 

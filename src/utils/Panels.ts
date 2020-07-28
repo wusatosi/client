@@ -1,7 +1,9 @@
-export type px = number
+export type Px = number;
+export type Id = number;
 
 export interface Panel extends DisplayData, DimensionData {
-  id: number;
+  id: Id;
+  linkingTo: Array<Id>;
 }
 
 export interface DisplayData {
@@ -15,15 +17,15 @@ export interface DimensionData {
 }
 
 export interface Size {
-  height: px;
-  width: px;
+  height: Px;
+  width: Px;
 }
 
 export interface PoistionOffset {
-  top: px;
-  left: px;
+  top: Px;
+  left: Px;
 }
 
 export interface PanelLinkAnchor {
-  topOffset: px;
+  topOffset: Px;
 }
