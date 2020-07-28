@@ -1,13 +1,13 @@
 <template>
   <div ref="container">
     <Dragable 
-      @new-poistion="_onDragPosUpdate" 
-      :top="source.poistion.top" 
-      :left="source.poistion.left"
+      @new-position="_onDragPosUpdate"
+      :top="source.position.top"
+      :left="source.position.left"
     >
         <p>{{ source.header }}</p>
         <p>Stuff</p>
-        <img src="https://cataas.com/cat">
+        <img src="https://cataas.com/cat" alt="dummy image">
     </Dragable>
   </div>
 </template>
@@ -15,7 +15,7 @@
 import Vue, { PropType } from "vue";
 
 import Dragable from "./Dragable.vue";
-import { Panel } from "../utils/Panels";
+import { Panel } from "@/utils/Panels";
 
 export interface PanelPositionUpdateEvent {
   self: Panel;
@@ -39,7 +39,7 @@ export default Vue.extend({
         self: this.source,
         newPos: container.getBoundingClientRect()
       }
-      this.$emit("new-poistion", event);
+      this.$emit("new-position", event);
     }
   }
 });

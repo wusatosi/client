@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { PoistionOffset } from "../utils/Panels";
+import { PoistionOffset } from "@/utils/Panels";
 
 interface Movement {
   movementX: number;
@@ -45,21 +45,21 @@ export default Vue.extend({
       document.onmouseup = this._unbindDragTracking;
     },
     _onElementDrag(event: MouseEvent) {
-      const Movement = this._calcuateMovement(event);
-      this._persistNewPoistionState(event);
-      this._doUpdatePoistion( this._calcuateNewPoistion(Movement) );
+      const Movement = this._calculateMovement(event);
+      this._persistNewPositionState(event);
+      this._doUpdatePosition( this._calculateNewPosition(Movement) );
       this._emitOnPosUpdate();
     },
-    _calcuateMovement(event: MouseEvent): Movement {
+    _calculateMovement(event: MouseEvent): Movement {
       const movementX = this.positions.clientX - event.clientX;
       const movementY = this.positions.clientY - event.clientY;
       return { movementX, movementY };
     },
-    _persistNewPoistionState(event: MouseEvent) {
+    _persistNewPositionState(event: MouseEvent) {
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
     },
-    _doUpdatePoistion(newPos: PoistionOffset) {
+    _doUpdatePosition(newPos: PoistionOffset) {
       const { top, left } = newPos;
       const container = this.$refs.container as HTMLElement;
       // TODO: 
@@ -69,7 +69,7 @@ export default Vue.extend({
       container.style.top = `${top}px`;
       container.style.left = `${left}px`;
     },
-    _calcuateNewPoistion(Movement: Movement): PoistionOffset {
+    _calculateNewPosition(Movement: Movement): PoistionOffset {
       const { movementX, movementY } = Movement;
       const container = this.$refs.container as HTMLElement;
       const top = container.offsetTop - movementY;
@@ -81,11 +81,11 @@ export default Vue.extend({
       document.onmousemove = null;
     },
     _emitOnPosUpdate() {
-      this.$emit("new-poistion");
+      this.$emit("new-position");
     }
   },
   mounted() {
-    this._doUpdatePoistion({
+    this._doUpdatePosition({
       top: this.top,
       left: this.left
     });

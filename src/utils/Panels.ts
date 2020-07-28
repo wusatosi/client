@@ -10,7 +10,7 @@ export interface DisplayData {
 
 export interface DimensionData {
   size: Size;
-  poistion: PoistionOffset;
+  position: PoistionOffset;
   anchor: Array<PanelLinkAnchor>;
 }
 

@@ -7,22 +7,22 @@
 import paper from "paper";
 import Vue, { PropType } from "vue";
 
-import { Panel, DimensionData } from "../utils/Panels";
+import { Panel, DimensionData } from "@/utils/Panels";
 
 class PanelLinkRelation {
   from: DimensionData;
   to: DimensionData;
 
   constructor(from: Panel, to: Panel) {
-    this.validatePanelRelation(from, to);
+    PanelLinkRelation.validatePanelRelation(from, to);
     this.from = from;
     this.to = to;
   }
 
-  private validatePanelRelation(from: Panel, to: Panel) {
+  private static validatePanelRelation(from: Panel, to: Panel) {
     console.assert(
       from.id < to.id,
-      `illegal linkage, id relation missmatch, from: ${from}, to: ${to}`
+      `illegal linkage, id relation mismatch, from: ${from}, to: ${to}`
     );
   }
 
