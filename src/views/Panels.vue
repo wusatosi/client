@@ -61,7 +61,7 @@ const panels: Array<Panel> = [
       anchor: {
         topOffset: 180
       },
-      linkingTo: []
+      linkingTo: [3]
     },
     {
       id: 3,

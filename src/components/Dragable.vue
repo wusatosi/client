@@ -1,7 +1,11 @@
 // See: https://dev.to/mandrewcito/vue-js-draggable-div-3mee
 
 <template>
-  <div ref="container" v-on:mousedown.prevent="dragMouseDown">
+  <div
+      v-bind:style="{top: positionCurrent.top + 'px', left: positionCurrent.left + 'px'}"
+      ref="container"
+      v-on:mousedown.prevent="dragMouseDown"
+  >
     <slot/>
   </div>
 </template>
@@ -28,16 +32,20 @@ export default Vue.extend({
   },
   data() {
     return {
-      positions: {
+      positionTrack: {
         clientX: NaN,
         clientY: NaN
+      },
+      positionCurrent: {
+        top: this.top,
+        left: this.left
       }
     }
   },
   methods: {
     dragMouseDown(event: MouseEvent) {
-      this.positions.clientX = event.clientX;
-      this.positions.clientY = event.clientY;
+      this.positionTrack.clientX = event.clientX;
+      this.positionTrack.clientY = event.clientY;
       this._bindDragTracking();
     },
     _bindDragTracking() {
@@ -51,23 +59,18 @@ export default Vue.extend({
       this._emitOnPosUpdate();
     },
     _calculateMovement(event: MouseEvent): Movement {
-      const movementX = this.positions.clientX - event.clientX;
-      const movementY = this.positions.clientY - event.clientY;
+      const movementX = this.positionTrack.clientX - event.clientX;
+      const movementY = this.positionTrack.clientY - event.clientY;
       return { movementX, movementY };
     },
     _persistNewPositionState(event: MouseEvent) {
-      this.positions.clientX = event.clientX;
-      this.positions.clientY = event.clientY;
+      this.positionTrack.clientX = event.clientX;
+      this.positionTrack.clientY = event.clientY;
     },
     _doUpdatePosition(newPos: PositionOffset) {
       const { top, left } = newPos;
-      const container = this.$refs.container as HTMLElement;
-      // TODO: 
-      // I should let vue do the style property binding
-      // at least I should try
-      // let's do it after the canvas thing is figured out
-      container.style.top = `${top}px`;
-      container.style.left = `${left}px`;
+      this.positionCurrent.top = top;
+      this.positionCurrent.left = left;
     },
     _calculateNewPosition(Movement: Movement): PositionOffset {
       const { movementX, movementY } = Movement;
@@ -77,6 +80,8 @@ export default Vue.extend({
       return { top, left };
     },
     _unbindDragTracking() {
+      this.positionTrack.clientX = NaN;
+      this.positionTrack.clientY = NaN;
       document.onmouseup = null;
       document.onmousemove = null;
     },
@@ -84,11 +89,5 @@ export default Vue.extend({
       this.$emit("new-position");
     }
   },
-  mounted() {
-    this._doUpdatePosition({
-      top: this.top,
-      left: this.left
-    });
-  }
 })
 </script>
