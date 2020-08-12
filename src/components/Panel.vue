@@ -1,25 +1,24 @@
 <template>
   <div ref="container">
-    <Dragable 
-      @new-position="_onDragPosUpdate"
-      :top="source.position.top"
-      :left="source.position.left"
+    <Dragable
+        @drag-to="_onDragTo"
+        :position="this.position"
     >
-        <p>{{ source.header }}</p>
-        <p>Stuff</p>
-        <img src="https://cataas.com/cat" alt="dummy image">
+      <p>{{ this.header }}</p>
+      <p>Stuff</p>
+      <img src="https://cataas.com/cat" alt="dummy image">
     </Dragable>
   </div>
 </template>
 <script lang="ts">
-import Vue, { PropType } from "vue";
+import Vue, {PropType} from "vue";
 
 import Dragable from "./Dragable.vue";
-import { Panel } from "@/utils/PanelTypes";
+import {Panel, PositionOffset} from "@/utils/PanelTypes";
 
 export interface PanelPositionUpdateEvent {
   self: Panel;
-  newPos: ClientRect;
+  newPos: PositionOffset;
 }
 
 export default Vue.extend({
@@ -29,19 +28,23 @@ export default Vue.extend({
       type: Object as PropType<Panel>
     }
   },
+  data() {
+    return {
+      ...this.source
+    };
+  },
   components: {
     Dragable
   },
   methods: {
-    _onDragPosUpdate() {
-      const container = this.$refs.container as HTMLElement;
+    _onDragTo(newPos: PositionOffset) {
       const event: PanelPositionUpdateEvent = {
         self: this.source,
-        newPos: container.getBoundingClientRect()
+        newPos: newPos
       }
-      this.$emit("new-position", event);
+      this.$emit("request-new-position", event);
     }
-  }
+  },
 });
 </script>
 <style scoped>

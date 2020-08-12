@@ -1,19 +1,15 @@
 export type Px = number;
 export type Id = number;
 
-export interface Panel extends DisplayData, DimensionData {
+export interface Panel extends DisplayData {
   id: Id;
   linkingTo: Array<Id>;
+  position: PositionOffset;
+  anchor: PanelLinkAnchor;
 }
 
 export interface DisplayData {
   header: String; 
-}
-
-export interface DimensionData {
-  size: Size;
-  position: PositionOffset;
-  anchor: PanelLinkAnchor;
 }
 
 export interface Size {

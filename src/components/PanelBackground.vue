@@ -7,36 +7,45 @@
 import paper from "paper";
 import Vue, {PropType} from "vue";
 
-import {Panel, DimensionData, Id} from "@/utils/PanelTypes";
+import {Panel, Id, Size} from "@/utils/PanelTypes";
 import {TwoDimensionMap} from "@/utils/TwoDimensionMap";
 
-class PanelLinkRelation {
-  from: DimensionData;
-  to: DimensionData;
+export interface SizedPanel extends Panel {
+  size: Size;
+}
 
-  constructor(from: Panel, to: Panel) {
+class PanelLinkRelation {
+  from: SizedPanel;
+  to: SizedPanel;
+  linkingLine: paper.Path = new paper.Path({});
+
+  constructor(from: SizedPanel, to: SizedPanel) {
     this.from = from;
     this.to = to;
   }
 
   render() {
     console.log("render called")
+    this.linkingLine.removeSegments();
     const fromAnchorPoint = PanelLinkRelation.getAnchorPointAtBoxCenter(this.from);
     const toAnchorPoint = PanelLinkRelation.getAnchorPointAtBoxCenter(this.to);
-    const line = new paper.Path.Line(fromAnchorPoint, toAnchorPoint);
-    line.strokeColor = new paper.Color("#6495ED");
-    line.strokeWidth = 10;
-    this.renderDebugOutlines();
+    this.linkingLine.add(fromAnchorPoint, toAnchorPoint);
+    this.linkingLine.strokeColor = new paper.Color("#6495ED");
+    this.linkingLine.strokeWidth = 10;
+    // this.renderDebugOutlines()
   }
 
-  private static getAnchorPointAtBoxCenter(dimension: DimensionData) {
+  private static getAnchorPointAtBoxCenter(dimension: SizedPanel) {
     const x = dimension.position.left + (dimension.size.width / 2);
     const y = dimension.position.top + dimension.anchor.topOffset;
-    return new paper.Point(x,y);
+    return new paper.Point(x, y);
   }
 
+  /*
+   * Debug outlines will not reset on re-render currently
+   */
   private renderDebugOutlines() {
-    function renderBox(dimension: DimensionData) {
+    function renderBox(dimension: SizedPanel) {
       const position = dimension.position;
       const topLeftPoint = new paper.Point(position.left, position.top);
       const paperSize = new paper.Size(dimension.size);
@@ -46,7 +55,7 @@ class PanelLinkRelation {
       return rectangle;
     }
 
-    function renderAnchorLine(dimension: DimensionData) {
+    function renderAnchorLine(dimension: SizedPanel) {
       const yOffset = dimension.position.top + dimension.anchor.topOffset;
       const xStart = dimension.position.left - 50;
       const xStop = xStart + dimension.size.width + 100;
@@ -60,7 +69,7 @@ class PanelLinkRelation {
       return line;
     }
 
-    function renderWithDimension(dimension: DimensionData) {
+    function renderWithDimension(dimension: SizedPanel) {
       renderBox(dimension);
       renderAnchorLine(dimension);
     }
@@ -75,12 +84,12 @@ export default Vue.extend({
   name: "Panel-Background",
   props: {
     panels: {
-      type: Array as PropType<Array<Panel>>
-    }
+      type: Array as PropType<Array<SizedPanel>>
+    },
   },
   data() {
     return {
-      panelById: new Map<Id, Panel>(),
+      panelById: new Map<Id, SizedPanel>(),
       linkingMap: new TwoDimensionMap<PanelLinkRelation>(),
       relations: new Set<PanelLinkRelation>()
     }
@@ -127,7 +136,7 @@ export default Vue.extend({
     _rebuildRelations() {
       this.linkingMap.forEach(relation => this.relations.add(relation))
     },
-    _reRenderAll() {
+    reRenderAll() {
       this.relations.forEach((relation) => {
         relation.render();
       });
@@ -136,7 +145,7 @@ export default Vue.extend({
   mounted() {
     this._setupPaper();
     this._rebuildState();
-    this._reRenderAll();
+    this.reRenderAll();
   }
 })
 </script>

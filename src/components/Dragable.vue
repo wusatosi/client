@@ -11,7 +11,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { PositionOffset } from "@/utils/PanelTypes";
+import {PositionOffset} from "@/utils/PanelTypes";
 
 interface Movement {
   movementX: number;
@@ -21,13 +21,8 @@ interface Movement {
 export default Vue.extend({
   name: "Dragable",
   props: {
-    top: {
-      type: Number,
-      default: 0
-    },
-    left: {
-      type: Number,
-      default: 0
+    position: {
+      type: Object as Vue.PropType<PositionOffset>
     }
   },
   data() {
@@ -36,10 +31,7 @@ export default Vue.extend({
         clientX: NaN,
         clientY: NaN
       },
-      positionCurrent: {
-        top: this.top,
-        left: this.left
-      }
+      positionCurrent: this.position
     }
   },
   methods: {
@@ -55,29 +47,24 @@ export default Vue.extend({
     _onElementDrag(event: MouseEvent) {
       const Movement = this._calculateMovement(event);
       this._persistNewPositionState(event);
-      this._doUpdatePosition( this._calculateNewPosition(Movement) );
-      this._emitOnPosUpdate();
+      const newPos = this._calculateNewPosition(Movement);
+      this._emitOnPosUpdate(newPos);
     },
     _calculateMovement(event: MouseEvent): Movement {
       const movementX = this.positionTrack.clientX - event.clientX;
       const movementY = this.positionTrack.clientY - event.clientY;
-      return { movementX, movementY };
+      return {movementX, movementY};
     },
     _persistNewPositionState(event: MouseEvent) {
       this.positionTrack.clientX = event.clientX;
       this.positionTrack.clientY = event.clientY;
     },
-    _doUpdatePosition(newPos: PositionOffset) {
-      const { top, left } = newPos;
-      this.positionCurrent.top = top;
-      this.positionCurrent.left = left;
-    },
     _calculateNewPosition(Movement: Movement): PositionOffset {
-      const { movementX, movementY } = Movement;
+      const {movementX, movementY} = Movement;
       const container = this.$refs.container as HTMLElement;
       const top = container.offsetTop - movementY;
       const left = container.offsetLeft - movementX;
-      return { top, left };
+      return {top, left};
     },
     _unbindDragTracking() {
       this.positionTrack.clientX = NaN;
@@ -85,8 +72,8 @@ export default Vue.extend({
       document.onmouseup = null;
       document.onmousemove = null;
     },
-    _emitOnPosUpdate() {
-      this.$emit("new-position");
+    _emitOnPosUpdate(position: PositionOffset) {
+      this.$emit("drag-to", position);
     }
   },
 })
