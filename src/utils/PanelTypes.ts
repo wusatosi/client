@@ -25,3 +25,12 @@ export interface PositionOffset {
 export interface PanelLinkAnchor {
   topOffset: Px;
 }
+
+export interface SizedPanel extends Panel {
+  size: Size;
+}
+
+export interface LinkingLineDrawer {
+  initialize(from: SizedPanel, to: SizedPanel): void;
+  draw(): void;
+}

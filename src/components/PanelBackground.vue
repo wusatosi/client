@@ -7,75 +7,27 @@
 import paper from "paper";
 import Vue, {PropType} from "vue";
 
-import {Panel, Id, Size} from "@/utils/PanelTypes";
+import {Id, LinkingLineDrawer, SizedPanel} from "@/utils/PanelTypes";
 import {TwoDimensionMap} from "@/utils/TwoDimensionMap";
-
-export interface SizedPanel extends Panel {
-  size: Size;
-}
+import {ListMap} from "@/utils/ListMap";
 
 class PanelLinkRelation {
   from: SizedPanel;
   to: SizedPanel;
-  linkingLine: paper.Path = new paper.Path({});
+  drawer: LinkingLineDrawer;
 
-  constructor(from: SizedPanel, to: SizedPanel) {
+  constructor(from: SizedPanel, to: SizedPanel, drawer: LinkingLineDrawer) {
     this.from = from;
     this.to = to;
+    this.drawer = drawer;
+  }
+
+  readyToInitialize() {
+    this.drawer.initialize(this.from, this.to);
   }
 
   render() {
-    console.log("render called")
-    this.linkingLine.removeSegments();
-    const fromAnchorPoint = PanelLinkRelation.getAnchorPointAtBoxCenter(this.from);
-    const toAnchorPoint = PanelLinkRelation.getAnchorPointAtBoxCenter(this.to);
-    this.linkingLine.add(fromAnchorPoint, toAnchorPoint);
-    this.linkingLine.strokeColor = new paper.Color("#6495ED");
-    this.linkingLine.strokeWidth = 10;
-    // this.renderDebugOutlines()
-  }
-
-  private static getAnchorPointAtBoxCenter(dimension: SizedPanel) {
-    const x = dimension.position.left + (dimension.size.width / 2);
-    const y = dimension.position.top + dimension.anchor.topOffset;
-    return new paper.Point(x, y);
-  }
-
-  /*
-   * Debug outlines will not reset on re-render currently
-   */
-  private renderDebugOutlines() {
-    function renderBox(dimension: SizedPanel) {
-      const position = dimension.position;
-      const topLeftPoint = new paper.Point(position.left, position.top);
-      const paperSize = new paper.Size(dimension.size);
-      const rectangle = new paper.Path.Rectangle(topLeftPoint, paperSize);
-      rectangle.selected = true;
-      console.log(`drawn box outline at ${topLeftPoint}, size: ${paperSize}`)
-      return rectangle;
-    }
-
-    function renderAnchorLine(dimension: SizedPanel) {
-      const yOffset = dimension.position.top + dimension.anchor.topOffset;
-      const xStart = dimension.position.left - 50;
-      const xStop = xStart + dimension.size.width + 100;
-
-      const startPoint = new paper.Point(xStart, yOffset);
-      const stopPoint = new paper.Point(xStop, yOffset);
-      const line = new paper.Path.Line(startPoint, stopPoint);
-      line.strokeColor = new paper.Color("red");
-
-      console.log(`drawn anchor line from ${startPoint} to ${stopPoint}}`)
-      return line;
-    }
-
-    function renderWithDimension(dimension: SizedPanel) {
-      renderBox(dimension);
-      renderAnchorLine(dimension);
-    }
-
-    renderWithDimension(this.from);
-    renderWithDimension(this.to);
+    this.drawer.draw();
   }
 
 }
@@ -86,12 +38,14 @@ export default Vue.extend({
     panels: {
       type: Array as PropType<Array<SizedPanel>>
     },
+    drawerFactory: {
+      type: Function as PropType<() => LinkingLineDrawer>
+    }
   },
   data() {
     return {
-      panelById: new Map<Id, SizedPanel>(),
-      linkingMap: new TwoDimensionMap<PanelLinkRelation>(),
-      relations: new Set<PanelLinkRelation>()
+      relations: new Set<PanelLinkRelation>(),
+      relationById: new ListMap<Id, PanelLinkRelation>()
     }
   },
   methods: {
@@ -101,50 +55,56 @@ export default Vue.extend({
     },
     _rebuildState() {
       this._resetAll();
-      this._rebuildPanels();
-      this._rebuildLinkingMap();
       this._rebuildRelations();
     },
     _resetAll() {
-      this.panelById.clear();
-      this.linkingMap.clear();
       this.relations.clear();
     },
-    _rebuildPanels() {
+    _rebuildRelations() {
+      const panelById = new Map<Id, SizedPanel>();
       this.panels.forEach(panel => {
-        this.panelById.set(panel.id, panel);
+        panelById.set(panel.id, panel);
       });
-    },
-    _rebuildLinkingMap() {
+      const linkingMap = new TwoDimensionMap<PanelLinkRelation>();
       this.panels.forEach(linkingFromPanel => {
         linkingFromPanel.linkingTo.forEach(linkingToId => {
           // let if fail if its null
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const linkingToPanel = this.panelById.get(linkingToId)!;
+          const linkingToPanel = panelById.get(linkingToId)!;
           const relation = new PanelLinkRelation(
               linkingFromPanel,
-              linkingToPanel
+              linkingToPanel,
+              this.drawerFactory()
           );
-          this.linkingMap.set(
+          linkingMap.set(
               linkingFromPanel.id,
               linkingToId,
               relation
           )
         });
       });
+      linkingMap.forEach(relation => this.relations.add(relation))
+      this.relations.forEach((relation) => {
+        this.relationById.set(relation.from.id, relation);
+        this.relationById.set(relation.to.id, relation);
+      });
     },
-    _rebuildRelations() {
-      this.linkingMap.forEach(relation => this.relations.add(relation))
+    _initializeDrawers() {
+      this.relations.forEach((relation) => relation.readyToInitialize())
     },
     reRenderAll() {
       this.relations.forEach((relation) => {
         relation.render();
       });
+    },
+    reRenderRelated(panel: SizedPanel) {
+      this.relationById.get(panel.id).forEach(relation => relation.render());
     }
   },
   mounted() {
     this._setupPaper();
     this._rebuildState();
+    this._initializeDrawers();
     this.reRenderAll();
   }
 })
