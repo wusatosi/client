@@ -2,9 +2,9 @@
   <div ref="container">
     <Dragable
         @drag-to="_onDragTo"
-        :position="this.position"
+        :position="this.source.position"
     >
-      <p>{{ this.header }}</p>
+      <p>{{ this.source.header }}</p>
       <p>Stuff</p>
       <img src="https://cataas.com/cat" alt="dummy image">
     </Dragable>
@@ -27,11 +27,6 @@ export default Vue.extend({
     source: {
       type: Object as PropType<Panel>
     }
-  },
-  data() {
-    return {
-      ...this.source
-    };
   },
   components: {
     Dragable

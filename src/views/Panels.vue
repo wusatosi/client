@@ -14,11 +14,15 @@
     I somehow HAVE TO put this comment inside the <template> section,
     or else vue.js REFUSE TO WORK
     WHY can't I have comment on the start of the file wtf vue.js?
+
+    edit 2:
+    The final structure is a event-driven system, instead of a double-
+    binding system, since its what vuejs promotes apparently
   -->
   <div id="panels">
     <div id="panel-container">
       <panel
-          v-for="panel in this.panels" :key="panel.index" v-bind:source="panel"
+          v-for="panel in this.panels" :key="panel.id" v-bind:source="panel"
           @request-new-position="_panelPosUpdateRequest(panel, $event)"
       />
     </div>
