@@ -8,7 +8,7 @@ interface LinkingLineHolder {
   to: SizedPanel;
 }
 
-class NonInitializedTrapLinkingLineHolder implements LinkingLineHolder {
+class PlaceHolderLineHolder implements LinkingLineHolder {
   get linkingLine(): paper.Path {
     throw "Non initialized";
   }
@@ -25,7 +25,7 @@ class NonInitializedTrapLinkingLineHolder implements LinkingLineHolder {
 
 export class DefaultLinkingLineDrawer implements LinkingLineDrawer {
 
-  private holder: LinkingLineHolder = new NonInitializedTrapLinkingLineHolder();
+  private holder: LinkingLineHolder = new PlaceHolderLineHolder();
 
   initialize(from: SizedPanel, to: SizedPanel) {
     this.holder = {
